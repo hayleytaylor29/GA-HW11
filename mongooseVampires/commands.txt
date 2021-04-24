@@ -1,0 +1,131 @@
+*** I might have missed the first couple of steps because I forgot to write all these down, sorry!!
+
+
+FOR THE FIRST VAMPIRE I JUST ADDED ON ITS OWN. THIS REMOVED THE '\'
+I HAD AROUND THE QUOTATION MARKS, ADJUSTED SYNTAX
+    db.vampires.updateOne({name:'Angel'},{$set:{
+        hair_color:'black',
+        eye_color:'hazel',
+        dob:'ISODate("1984-07-03T17:12:00Z")',
+        loves:'["Buffy", "reading", "trampolines"]',
+        location:'Sunnydale, California, US',
+        gender:'m',
+        victims:'3827349'
+        }})
+
+ADD THE ADDITIONAL 5 VAMPIRES
+    db.vampires.insertMany([ 
+        {name:'Eric Northman'}, 
+        {name:'Spike'}, 
+        {name:'Jessica Hamby'}, 
+        {name:'Pam Swynford De Beaufort'}, 
+        {name:'Drusilla'}
+        ])
+
+FIND ALL THE FEMALE VAMPIRES
+    db.vampires.find({gender:'f'},true)
+
+GREATER THAN 500 VICTIMS
+    db.vampires.find({victims:{$gt:500}},true)
+
+LESS THAN OR EQUAL TO 150 VICTIMS
+    db.vampires.find({victims:{$lte:150}},true)
+
+VICTIMS NOT EQUAL TO 210234
+    db.vampires.find({victims:{$ne:210234}},true)
+
+VICTIMS GREATER THAN 150 AND LESS THAN 500
+    db.vampires.find({$and:[{victims:{$gt:150}},{victims:{$lt:500}}]})
+
+VAMPIRES THAT HAVE A TITLE(I forgot to add the title originally to
+my schema and now I'm not getting anything returned for that)
+    db.vampires.find({title:{$exists:true}})
+
+VAMPIRES THAT DO NOT HAVE A VICTIM COUNT
+    db.vampires.find({victims:{$exists:false}})
+
+VAMPIRES THAT HAVE A TITLE AND NO VICTIMS(doesn't return anything because
+of my error with the title)
+    db.vampires.find({$and:[{title:{$exists:true}},{victims:{$exists:false}}]})
+
+VAMPIRES THAT HAVE VICTIMS AND THE # OF VICTIMS IS OVER 1000
+    db.vampires.find({victims:{$exists:true, $gt:1000}})
+
+VAMPIRES FROM NY, NY OR NEW ORLEANS, LA
+    db.vampires.find({location: {$in:['New York, New York, US',
+    'New Orleans, Louisiana, US']}})
+
+VAMPIRES THAT LOVE BROODING OR BEING TRAGIC
+    db.vampires.find({loves: {$in:['being tragic','brooding']}})
+
+VAMPIRES THAT HAVE MORE THAN 1000 VICTIMS OR LOVE MARSHMALLOWS
+    db.vampires.find({$or:[{victims:{$gt:1000}},{loves:'marshmallows'}]})
+
+VAMPIRES THAT HAVE RED HAIR OR GREEN EYES
+    db.vampires.find({$or:[{hair_color:'red'},{eye_color:'green'}]})
+
+VAMPIRES THAT LOVE EITHER FRILLY SHIRTSLEEVES OR FRILLY COLLARS
+    db.vampires.find({loves: {$in:['frilly shirtsleeves','frilly collars']}})
+
+VAMPIRES THAT LOVE BROODING
+    db.vampires.find({loves:{$eq:'brooding'}})
+
+VAMPIRES THAT LOVE AT LEAST: APPEARING INNOCENT, TRICKERY, LURKING IN ROTTEN
+MANSIONS, R&B MUSIC
+     db.vampires.find({loves:{$in:['appearing innocent','trickery',
+     'lurking in rotting mansions','R&B music']}})
+
+VAMPIRES THAT LOVES FANCY CLOAKS BUT NOT IF THEY ALSO
+LOVE TOP HATS & VIRGIN BLOOD
+    db.vampires.find({$and:[{loves:{$nin:['top hats', 'virgin blood']}},{loves:'fancy cloaks'}]})
+
+VAMPIRES THAT LOVE RIBBONS BUT DO NOT HAVE BROWN EYES
+    db.vampires.find({$and:[{eye_color:{$ne:'brown'}},{loves:'ribbons'}]})
+
+VAMPIRES NOT FROM ROME, ITALY
+    db.vampires.find({location:{$ne:'Rome, Italy'}})
+
+VAMPIRES THAT DON'T LOVE: FANCY CLOAKS, FRILLY SHIRTSLEEVES, APPEARING INNOCENT,
+BEING TRAGIC, OR BROODING   
+    db.vampires.find({loves:{$nin:['fancy cloaks', 'frilly shirtsleeves',
+    'appearing innocent', 'being tragic', 'brooding']}})
+
+VAMPIRES THAT HAVE NOT KILLED MORE THAN 200 PEOPLE
+    db.vampires.find({victims:{$lt:200}})
+
+REPLACE THE VAMPIRE CLAUDIA WITH A VAMPIRE NAMED EVE
+    db.vampires.replaceOne({name:'Claudia'},{name:'Eve'})
+
+ADD A FIELD TO EVE CALLED PORTAYED_BY WITH THE VALUE 'TILDA SWINTON'
+    db.vampires.updateOne({name:'Eve'},{$set:{portrayed_by:'Tilda Swinton'}})
+
+REPLACE THE FIRST MALE VAMPIRE WITH A VAMPIRE NAMED 'GUY MAN'
+    db.vampires.replaceOne({name:'Count Chocula'},{name:'Guy Man'})
+
+ADD A FIELD TO GUY MAN CALLED IS_ACTUALLY WITH THE VALUE 'WERE-LIZARD'
+    db.vampires.updateOne({name:'Guy Man'},{$set:{is_actually:'were-lizard'}})
+
+GIVE GUY MAN A GENDER OF M
+    db.vampires.updateOne({name:'Guy Man'}, {$set:{gender:'m'}})
+
+GIVE EVE A GENDER OF F
+    db.vampires.updateOne({name:'Eve'},{$set:{gender:'f'}})
+
+GIVE GUY MAN A FIELD CALLED HATES WITH AN ARRAY OF 'CLOTHES' AND 'JOBS'
+    db.vampires.updateOne({name:'Guy Man'},{$set:{hates:['clothes', 'jobs']}})
+
+ADD 'ALARM CLOCKS' AND 'JACKALOPES' TO THE ARRAY OF HATES FOR GUY MAN 
+    db.vampires.updateOne({name:'Guy Man'},{$push:{hates:{$each:['alarm clocks', 'jackalopes']}}})
+
+RENAME EVE'S NAME FIELD TO 'MONIKER'
+    db.vampires.updateOne({name:'Eve'},{$rename:{'name':'moniker'}})
+
+UPDATE ALL 'F' VALUES IN GENDER TO 'FEMS'
+    db.vampires.updateMany({gender:'f'},{$set:{gender:'fems'}})
+
+REMOVE JUST ONE VAMPIRE WITH BROWN HAIR 
+    db.vampires.remove({hair_color:'brown'},{justOne:true})
+
+REMOVE ALL THE VAMPIRE WITH BLUE EYES 
+    db.vampires.remove({eye_color:'blue'})
+
